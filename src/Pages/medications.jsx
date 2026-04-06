@@ -46,14 +46,14 @@ function Medications() {
     <div className="min-vh-100" style={{ background: "linear-gradient(135deg, #e3f0ff, #e8f5e9)" }}>
       <div className="container py-5">
 
-        {/* Header */}
+       
         <div className="text-center mb-4">
           <h2 className="fw-bold" style={{ color: "#1a73e8" }}>
             💊 Dawai | دوائي
           </h2>
         </div>
 
-        {/* Form Card */}
+      
         <div className="card shadow-lg border-0 rounded-4 mb-5 p-4">
           <h5 className="fw-bold mb-3">{editId ? "✏️ Edit Medication" : "➕ Add Medication"}</h5>
           {error && <div className="alert alert-danger py-2">{error}</div>}
@@ -93,7 +93,7 @@ function Medications() {
           </button>
         </div>
 
-        {/* Medications List */}
+        {}
         {medications.length === 0 && (
           <div className="text-center text-muted">No medications added yet.</div>
         )}
