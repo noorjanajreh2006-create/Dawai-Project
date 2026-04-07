@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const dummyMedications = [
-  { id: 1, name: "Panadol", dose: "500mg", times: "8am, 8pm", notes: "بعد الأكل" },
-  { id: 2, name: "Vitamin C", dose: "1000mg", times: "9am", notes: "" },
-];
+const dummyMedications = [];
 
 function Medications() {
   const [medications, setMedications] = useState(dummyMedications);
