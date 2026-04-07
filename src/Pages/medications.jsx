@@ -49,7 +49,7 @@ function Medications() {
        
         <div className="text-center mb-4">
           <h2 className="fw-bold" style={{ color: "#1a73e8" }}>
-            💊 Dawai | دوائي
+            💊 Dawai | دَوَائي
           </h2>
         </div>
 
