@@ -114,7 +114,7 @@ function Medications() {
             </div>
 
             <div className="d-flex flex-column gap-3">
-              <h5 className="fw-bold px-2">Daily Checklist</h5>
+              <h5 className="fw-bold px-2">Today Checklist</h5>
               {medications.length === 0 && (
                 <div className="text-center py-5 text-muted opacity-50">
                   No medications added yet.
