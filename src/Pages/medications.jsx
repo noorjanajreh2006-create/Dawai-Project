@@ -141,7 +141,7 @@ function Medications() {
                     </div>
                     <div className="d-flex gap-1">
                       <button className="btn btn-link py-0 text-muted" onClick={() => handleEdit(med)}>Edit</button>
-                      <button className="btn btn-link py-0 text-danger" onClick={() => handleDelete(med.id)}>Del</button>
+                      <button className="btn btn-link py-0 text-danger" onClick={() => handleDelete(med.id)}>Delete</button>
                     </div>
                   </div>
                 </div>
