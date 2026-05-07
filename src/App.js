@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Login from "./Pages/Login";
+import Register from "./Pages/Register";
 import Medications from "./Pages/medications";
 import Statistics from "./Pages/Statistics";
 
@@ -32,6 +33,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/medications" element={<Medications />} />
         <Route path="/statistics" element={<Statistics />} />
       </Routes>

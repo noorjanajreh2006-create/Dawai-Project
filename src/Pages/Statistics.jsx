@@ -14,29 +14,54 @@ import {
 
 const Statistics = () => {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [avgAdherence, setAvgAdherence] = useState(0);
 
   useEffect(() => {
-    // Fetch statistics from backend
+    const generateStats = () => {
+      try {
+        const savedMeds = JSON.parse(localStorage.getItem('medications') || '[]');
+        const savedLogs = JSON.parse(localStorage.getItem('doseLogs') || '{}');
+        const statsData = [];
+        let totalAdherence = 0;
+
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toISOString().split('T')[0];
+          const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+
+          const dayLogs = savedLogs[dateStr] || {};
+          const takenCount = Object.keys(dayLogs).filter(id => dayLogs[id]).length;
+          const totalMeds = savedMeds.length;
+
+          const adherence = totalMeds > 0 ? Math.round((takenCount / totalMeds) * 100) : 0;
+          totalAdherence += adherence;
+
+          statsData.push({
+            name: dayName,
+            adherence: adherence
+          });
+        }
+        
+        setData(statsData);
+        setAvgAdherence(Math.round(totalAdherence / 7));
+      } catch (err) {
+        console.error('Error generating stats:', err);
+      }
+    };
+    
+    // Also try fetch in case backend overrides
     fetch('http://localhost:5000/api/stats')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('Network err');
+        return res.json();
+      })
       .then((stats) => {
         setData(stats);
-        setLoading(false);
       })
-      .catch((err) => {
-        console.error('Error fetching stats:', err);
-        // Fallback dummy data if backend is not running
-        setData([
-          { name: 'Sat', adherence: 80 },
-          { name: 'Sun', adherence: 95 },
-          { name: 'Mon', adherence: 70 },
-          { name: 'Tue', adherence: 85 },
-          { name: 'Wed', adherence: 90 },
-          { name: 'Thu', adherence: 60 },
-          { name: 'Fri', adherence: 100 },
-        ]);
-        setLoading(false);
+      .catch(() => {
+        // Fallback to local storage calculated stats
+        generateStats();
       });
   }, []);
 
@@ -93,9 +118,9 @@ const Statistics = () => {
         <div className="col-12 col-lg-4">
           <div className="glass-card p-4 mb-4">
             <h6 className="text-muted text-uppercase small ls-wide mb-1">Average Weekly</h6>
-            <h3 className="fw-bold mb-0">83%</h3>
+            <h3 className="fw-bold mb-0">{avgAdherence}%</h3>
             <div className="progress mt-3" style={{ height: 8, backgroundColor: 'rgba(0,0,0,0.05)' }}>
-              <div className="progress-bar" style={{ width: '83%', backgroundColor: 'var(--accent-color)' }}></div>
+              <div className="progress-bar" style={{ width: `${avgAdherence}%`, backgroundColor: 'var(--accent-color)' }}></div>
             </div>
           </div>
 

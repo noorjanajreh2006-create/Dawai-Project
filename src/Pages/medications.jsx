@@ -3,10 +3,17 @@ import React, { useState } from "react";
 const dummyMedications = [];
 
 function Medications() {
-  const [medications, setMedications] = useState(dummyMedications);
+  const [medications, setMedications] = useState(() => {
+    const saved = localStorage.getItem('medications');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [form, setForm] = useState({ name: "", dose: "", times: "", notes: "" });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
+
+  React.useEffect(() => {
+    localStorage.setItem('medications', JSON.stringify(medications));
+  }, [medications]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -38,25 +45,44 @@ function Medications() {
     setMedications(medications.filter((m) => m.id !== id));
   };
 
-  const [takenStatus, setTakenStatus] = useState({});
+  const [doseLogs, setDoseLogs] = useState(() => {
+    const saved = localStorage.getItem('doseLogs');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem('doseLogs', JSON.stringify(doseLogs));
+  }, [doseLogs]);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const takenStatus = doseLogs[todayStr] || {};
 
   const handleLogDose = async (medId) => {
     try {
-      await fetch('http://localhost:5000/api/log-dose', {
+      // Keep fake fetch for consistency if they want to build real backend later
+      fetch('http://localhost:5000/api/log-dose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ medId, status: 'taken' }),
-      });
-      setTakenStatus({ ...takenStatus, [medId]: true });
-    } catch (err) {
-      console.error('Error logging dose:', err);
-    }
+      }).catch(err => console.log("Backend not connected, saving locally."));
+    } catch (err) { }
+
+    setDoseLogs((prev) => {
+      const todayLogs = prev[todayStr] || {};
+      return {
+        ...prev,
+        [todayStr]: {
+          ...todayLogs,
+          [medId]: !todayLogs[medId]
+        }
+      };
+    });
   };
 
   return (
     <div className="min-vh-100 py-5" style={{ backgroundColor: 'var(--bg-color)' }}>
       <div className="container">
-        
+
         <div className="text-center mb-5">
           <h1 className="fw-bold mb-0" style={{ color: 'var(--accent-color)' }}>
             💊 Dawai | دَوَائي
@@ -125,7 +151,7 @@ function Medications() {
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
                       <div className="d-flex align-items-center gap-2">
-                        <button 
+                        <button
                           className={`btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center ${takenStatus[med.id] ? 'btn-success' : 'btn-outline-secondary'}`}
                           style={{ width: '24px', height: '24px' }}
                           onClick={() => handleLogDose(med.id)}
