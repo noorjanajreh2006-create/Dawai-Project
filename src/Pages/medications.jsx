@@ -57,15 +57,18 @@ function Medications() {
   const todayStr = new Date().toISOString().split('T')[0];
   const takenStatus = doseLogs[todayStr] || {};
 
-  const handleLogDose = async (medId) => {
-    try {
-      // Keep fake fetch for consistency if they want to build real backend later
-      fetch('http://localhost:5000/api/log-dose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ medId, status: 'taken' }),
-      }).catch(err => console.log("Backend not connected, saving locally."));
-    } catch (err) { }
+ const handleLogDose = async (medId) => {
+  try {
+    await axios.post("http://localhost:5000/api/log-dose", {
+      medId,
+      status: "taken",
+    });
+
+    setTakenStatus({ ...takenStatus, [medId]: true });
+  } catch (err) {
+    console.error("Error logging dose:", err);
+  }
+};
 
     setDoseLogs((prev) => {
       const todayLogs = prev[todayStr] || {};
