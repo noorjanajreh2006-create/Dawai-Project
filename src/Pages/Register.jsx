@@ -1,24 +1,25 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-function Login() {
-
+function Register() {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    const response = await fetch("http://localhost:3000/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        fullName,
         email,
-        password
+        password,
+        confirmPassword
       })
     });
 
@@ -29,16 +30,11 @@ function Login() {
       return;
     }
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    alert("Login successful");
-    navigate("/dashboard");
+    alert("Register successful");
   };
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4 bg-light">
-
       <img
         src="/Dawailogo.png"
         alt="Dawai Logo"
@@ -46,12 +42,20 @@ function Login() {
       />
 
       <div className="card p-4 shadow" style={{ width: "350px", borderRadius: "15px" }}>
-        <h3 className="text-center mb-2">Welcome Back</h3>
+        <h3 className="text-center mb-2">Create Account</h3>
         <p className="text-center text-muted mb-3" style={{ fontSize: "14px" }}>
-          Sign in to continue
+          Sign up to get started
         </p>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            className="form-control mb-3"
+            placeholder="Full Name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
+
           <input
             type="email"
             className="form-control mb-3"
@@ -68,19 +72,23 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button
-            type="submit"
-            className="btn w-100"
-            style={{ background: "#2b6cb0", color: "#fff" }}
-          >
-            Sign In
+          <input
+            type="password"
+            className="form-control mb-3"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
+          <button type="submit" className="btn w-100" style={{ background: "#2b6cb0", color: "#fff" }}>
+            Sign Up
           </button>
         </form>
 
         <p className="text-center mt-3" style={{ fontSize: "14px" }}>
-          Don’t have an account?{" "}
-          <Link to="/register" style={{ color: "#2b6cb0", fontWeight: "bold" }}>
-            Sign Up
+          Already have an account?{" "}
+          <Link to="/" style={{ color: "#2b6cb0", fontWeight: "bold" }}>
+            Sign In
           </Link>
         </p>
       </div>
@@ -88,4 +96,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
