@@ -1,36 +1,21 @@
 {
-  "name": "dawai-project",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.16.0",
-    "bootstrap": "^5.3.8",
-    "concurrently": "^9.2.1",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.30.3",
-    "react-scripts": "5.0.1",
-    "recharts": "^3.8.1",
-    "web-vitals": "^2.1.4"
-  },
+  "name": "dawai-app",
+  "version": "1.0.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "lucide-react": "^1.14.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.15.0",
+    "react-scripts": "5.0.1"
   },
+  "devDependencies": {},
   "browserslist": {
     "production": [
       ">0.2%",
