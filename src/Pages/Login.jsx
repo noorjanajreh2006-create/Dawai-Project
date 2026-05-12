@@ -9,20 +9,20 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevents the page from refreshing when the form is submitted
 
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    const response = await fetch("http://localhost:3000/api/auth/login", { // Sends the login request to the backend and waits for the response
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
+      body: JSON.stringify({ // change the data into JSON
         email,
         password
       })
     });
 
-    const data = await response.json();
+    const data = await response.json(); // Stores the response data from the backend
 
     if (!response.ok) {
       alert(data.message);
@@ -36,7 +36,7 @@ function Login() {
     navigate("/dashboard");
   };
 
-  return (
+  return ( // Most of the frontend design is built using Bootstrap
     <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4 bg-light">
 
       <img

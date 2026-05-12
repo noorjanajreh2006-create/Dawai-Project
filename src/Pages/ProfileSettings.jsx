@@ -20,7 +20,7 @@ function ProfileSettings() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: `Bearer ${token}`, // Adds Bearer before the token because the stored token does not include it
       },
       body: JSON.stringify({
         fullName,
@@ -42,7 +42,7 @@ function ProfileSettings() {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (

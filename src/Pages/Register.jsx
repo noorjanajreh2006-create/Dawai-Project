@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/auth/register", {
+    const response = await fetch("http://localhost:3000/api/auth/register", { // Same logic as the Login page, but sends additional user data to create a new account
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -31,6 +33,7 @@ function Register() {
     }
 
     alert("Register successful");
+    navigate("/");
   };
 
   return (
