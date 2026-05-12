@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from 'axios';
+
 
 const dummyMedications = [];
 
@@ -63,25 +65,21 @@ function Medications() {
       medId,
       status: "taken",
     });
-
-    setTakenStatus({ ...takenStatus, [medId]: true });
-  } catch (err) {
-    console.error("Error logging dose:", err);
-  }
-};
-
+    // Update dose logs state to toggle taken status for today
     setDoseLogs((prev) => {
       const todayLogs = prev[todayStr] || {};
       return {
         ...prev,
         [todayStr]: {
           ...todayLogs,
-          [medId]: !todayLogs[medId]
-        }
+          [medId]: !todayLogs[medId],
+        },
       };
     });
-  };
-
+  } catch (err) {
+    console.error("Error logging dose:", err);
+  }
+};
   return (
     <div className="min-vh-100 py-5" style={{ backgroundColor: 'var(--bg-color)' }}>
       <div className="container">
