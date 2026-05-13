@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-const MEDICATIONS_KEY = "dawai-medications";
-const LOGS_KEY = "dawai-dose-logs";
+import { apiRequest } from "../api";
 
 function Medications() {
   const [medications, setMedications] = useState([]);
@@ -11,28 +9,16 @@ function Medications() {
   const [takenStatus, setTakenStatus] = useState({});
 
   useEffect(() => {
-    setMedications(JSON.parse(localStorage.getItem(MEDICATIONS_KEY) || "[]"));
-    const today = new Date().toISOString().slice(0, 10);
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || "[]");
-    const todayStatus = logs.reduce((acc, log) => {
-      if (log.date === today && log.status === "taken") {
-        acc[log.medId] = true;
-      }
-      return acc;
-    }, {});
-    setTakenStatus(todayStatus);
+    apiRequest("/medications")
+      .then(setMedications)
+      .catch((err) => setError(err.message));
   }, []);
-
-  const saveMedications = (nextMedications) => {
-    setMedications(nextMedications);
-    localStorage.setItem(MEDICATIONS_KEY, JSON.stringify(nextMedications));
-  };
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name || !form.dose || !form.times) {
       setError("Please fill all required fields.");
       return;
@@ -40,23 +26,30 @@ function Medications() {
 
     setError("");
 
-    if (editId !== null) {
-      saveMedications(medications.map((medication) => (
-        medication.id === editId ? { ...medication, ...form } : medication
-      )));
-      setEditId(null);
-    } else {
-      saveMedications([
-        ...medications,
-        {
-          ...form,
-          id: Date.now(),
-          status: "Scheduled",
-        },
-      ]);
-    }
+    try {
+      if (editId !== null) {
+        const updatedMedication = await apiRequest(`/medications/${editId}`, {
+          method: "PUT",
+          body: JSON.stringify(form),
+        });
 
-    setForm({ name: "", dose: "", times: "", notes: "" });
+        setMedications(medications.map((medication) => (
+          medication.id === editId ? updatedMedication : medication
+        )));
+        setEditId(null);
+      } else {
+        const newMedication = await apiRequest("/medications", {
+          method: "POST",
+          body: JSON.stringify(form),
+        });
+
+        setMedications([newMedication, ...medications]);
+      }
+
+      setForm({ name: "", dose: "", times: "", notes: "" });
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleEdit = (medication) => {
@@ -69,24 +62,25 @@ function Medications() {
     setEditId(medication.id);
   };
 
-  const handleDelete = (id) => {
-    saveMedications(medications.filter((medication) => medication.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await apiRequest(`/medications/${id}`, { method: "DELETE" });
+      setMedications(medications.filter((medication) => medication.id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const handleLogDose = (medId) => {
-    const today = new Date().toISOString().slice(0, 10);
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || "[]");
-    const nextLogs = [
-      ...logs,
-      {
-        medId,
-        status: "taken",
-        date: today,
-      },
-    ];
-
-    localStorage.setItem(LOGS_KEY, JSON.stringify(nextLogs));
-    setTakenStatus({ ...takenStatus, [medId]: true });
+  const handleLogDose = async (medId) => {
+    try {
+      await apiRequest(`/medications/${medId}/log-dose`, {
+        method: "POST",
+        body: JSON.stringify({ status: "taken" }),
+      });
+      setTakenStatus({ ...takenStatus, [medId]: true });
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -94,7 +88,7 @@ function Medications() {
       <div className="container">
         <div className="text-center mb-5">
           <h1 className="fw-bold mb-0 section-title">Dawai Medications</h1>
-          <p className="text-muted mt-2">Manage your health journey locally in the browser.</p>
+          <p className="text-muted mt-2">Manage your health journey with your saved account data.</p>
         </div>
 
         <div className="row justify-content-center">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Components/Noor-jr/Footer";
+import { apiRequest, clearSession, saveSession } from "../api";
 
 function ProfileSettings() {
   const navigate = useNavigate();
@@ -11,16 +12,25 @@ function ProfileSettings() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
-    const user = { fullName, email };
-    localStorage.setItem("user", JSON.stringify(user));
-    setPassword("");
-    setMessage(password ? "Profile and password note saved locally." : "Profile saved locally.");
+
+    try {
+      const data = await apiRequest("/auth/profile", {
+        method: "PUT",
+        body: JSON.stringify({ fullName, email, password }),
+      });
+
+      saveSession({ user: data.user });
+      setPassword("");
+      setMessage("Profile updated successfully.");
+    } catch (err) {
+      setMessage(err.message);
+    }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearSession();
     navigate("/", { replace: true });
   };
 
@@ -29,7 +39,7 @@ function ProfileSettings() {
       <main className="container py-5">
         <div className="mb-4">
           <h3 className="section-title">Profile Settings</h3>
-          <p className="text-muted mb-0">Manage the local frontend profile.</p>
+          <p className="text-muted mb-0">Manage your account profile.</p>
         </div>
 
         <div className="row g-4 align-items-stretch">
@@ -39,7 +49,7 @@ function ProfileSettings() {
               <h5 className="mb-1">{fullName || "User Name"}</h5>
               <p className="text-muted mb-3 small">{email || "No email saved"}</p>
               <hr />
-              <p className="text-muted mb-0 small">This page is frontend-only and stores data in the browser.</p>
+              <p className="text-muted mb-0 small">Your account data is saved in the Dawai backend.</p>
             </div>
           </div>
 
@@ -56,7 +66,7 @@ function ProfileSettings() {
                 <input type="email" className="form-control mb-3" value={email} onChange={(event) => setEmail(event.target.value)} />
 
                 <label className="form-label">New Password</label>
-                <input type="password" className="form-control mb-4" placeholder="Stored as a local demo note only" value={password} onChange={(event) => setPassword(event.target.value)} />
+                <input type="password" className="form-control mb-4" placeholder="Leave blank if no change" value={password} onChange={(event) => setPassword(event.target.value)} />
 
                 <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
                   <button type="submit" className="btn px-4 app-primary-button">Save Changes</button>

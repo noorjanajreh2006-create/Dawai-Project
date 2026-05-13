@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiRequest, saveSession } from "../api";
 
 function Login() {
   const navigate = useNavigate();
@@ -7,7 +8,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     if (!email || !password) {
@@ -15,15 +16,17 @@ function Login() {
       return;
     }
 
-    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const user = {
-      fullName: savedUser.fullName || "Dawai User",
-      email,
-    };
+    try {
+      const data = await apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", "frontend-demo-token");
-    navigate("/dashboard", { replace: true });
+      saveSession(data);
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (

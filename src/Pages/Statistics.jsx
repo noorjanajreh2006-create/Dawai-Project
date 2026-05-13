@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { apiRequest } from "../api";
 import {
   Area,
   AreaChart,
@@ -12,33 +13,14 @@ import {
   YAxis,
 } from "recharts";
 
-const LOGS_KEY = "dawai-dose-logs";
-
-function buildStats() {
-  const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || "[]");
-  const today = new Date();
-
-  return Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() - (6 - index));
-    const dateKey = date.toISOString().slice(0, 10);
-    const dayLogs = logs.filter((log) => log.date === dateKey);
-    const taken = dayLogs.filter((log) => log.status === "taken").length;
-    const totalExpected = Math.max(dayLogs.length, 1);
-
-    return {
-      name: date.toLocaleDateString("en-US", { weekday: "short" }),
-      date: dateKey,
-      adherence: Math.round((taken / totalExpected) * 100),
-    };
-  });
-}
-
 function Statistics() {
   const [data, setData] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    setData(buildStats());
+    apiRequest("/stats")
+      .then(setData)
+      .catch((err) => setError(err.message));
   }, []);
 
   const average = data.length
@@ -51,6 +33,8 @@ function Statistics() {
         <h2 className="fw-bold m-0 section-title">My Stats</h2>
         <span className="badge app-badge rounded-pill px-3 py-2">Last 7 Days</span>
       </div>
+
+      {error && <div className="alert alert-danger py-2">{error}</div>}
 
       <div className="row g-4">
         <div className="col-12 col-lg-8">

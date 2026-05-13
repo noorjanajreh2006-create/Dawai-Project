@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiRequest, saveSession } from "../api";
 
 function Register() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Register() {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault();
 
     if (!form.fullName || !form.email || !form.password || !form.confirmPassword) {
@@ -28,14 +29,17 @@ function Register() {
       return;
     }
 
-    const user = {
-      fullName: form.fullName,
-      email: form.email,
-    };
+    try {
+      const data = await apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
 
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", "frontend-demo-token");
-    navigate("/dashboard", { replace: true });
+      saveSession(data);
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -44,7 +48,7 @@ function Register() {
 
       <div className="glass-card auth-card p-4">
         <h3 className="text-center mb-2 fw-bold">Create Account</h3>
-        <p className="text-center text-muted mb-4 small">Set up a local frontend profile</p>
+        <p className="text-center text-muted mb-4 small">Create your Dawai account</p>
 
         {error && <div className="alert alert-danger py-2">{error}</div>}
 

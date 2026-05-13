@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { medicationData } from "../data/medData";
 import Footer from "../Components/Noor-jr/Footer";
+import { apiRequest } from "../api";
 
 function Dashboard() {
-  const medications = JSON.parse(localStorage.getItem("dawai-medications") || "[]");
-  const logs = JSON.parse(localStorage.getItem("dawai-dose-logs") || "[]");
+  const [medications, setMedications] = useState([]);
+  const [stats, setStats] = useState([]);
+  const [error, setError] = useState("");
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const source = medications.length ? medications : medicationData;
-  const takenToday = logs.filter((log) => log.status === "taken" && log.date === new Date().toISOString().slice(0, 10)).length;
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayStats = stats.find((item) => item.date === todayKey);
+  const takenToday = todayStats?.adherence || 0;
+
+  useEffect(() => {
+    Promise.all([apiRequest("/medications"), apiRequest("/stats")])
+      .then(([medicationsData, statsData]) => {
+        setMedications(medicationsData);
+        setStats(statsData);
+      })
+      .catch((err) => setError(err.message));
+  }, []);
 
   return (
     <div className="min-vh-100 page-bg">
@@ -28,11 +41,13 @@ function Dashboard() {
       </header>
 
       <main className="container pb-5">
+        {error && <div className="alert alert-danger py-2">{error}</div>}
+
         <div className="row g-4 mb-4">
           <div className="col-md-4">
             <div className="glass-card p-4 stat-card">
               <span>Tracked Today</span>
-              <strong>{takenToday}</strong>
+              <strong>{takenToday}%</strong>
             </div>
           </div>
           <div className="col-md-4">
@@ -72,7 +87,7 @@ function Dashboard() {
           ))}
         </div>
 
-        <Footer studentName="Abdallah Yaseen + Dawai Team" studentId="Frontend Merge" githubUrl="https://github.com/noorjanajreh2006-create/Dawai-Project" />
+        <Footer studentName="Abdallah Yaseen + Dawai Team" studentId="Frontend + Backend Merge" githubUrl="https://github.com/noorjanajreh2006-create/Dawai-Project" />
       </main>
     </div>
   );
