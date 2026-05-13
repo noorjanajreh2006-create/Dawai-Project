@@ -74,9 +74,6 @@ function Login() {
             Sign In
           </button>
         </form>
-            Sign In
-          </button>
-        </form>
 
         <p className="text-center mt-4 small">
           Don’t have an account?{" "}
