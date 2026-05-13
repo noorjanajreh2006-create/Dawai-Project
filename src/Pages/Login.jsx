@@ -1,49 +1,55 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = {
+      fullName: savedUser.fullName || "Dawai User",
+      email,
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", "frontend-demo-token");
+    navigate("/dashboard", { replace: true });
+  };
+
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4" style={{ backgroundColor: 'var(--bg-color)' }}>
+    <div className="auth-page">
+      <img src="/Dawailogo.png" alt="Dawai Logo" className="auth-logo" />
 
-      <h1 className="fw-bold mb-4" style={{ color: 'var(--accent-color)' }}>💊 Dawai</h1>
-
-      <div className="glass-card p-4 mx-3" style={{ maxWidth: "400px", width: "100%" }}>
+      <div className="glass-card auth-card p-4">
         <h3 className="text-center mb-2 fw-bold">Welcome Back</h3>
-        <p className="text-center text-muted mb-4 small">
-          Sign in to track your medication progress
-        </p>
+        <p className="text-center text-muted mb-4 small">Sign in to track your medication progress</p>
 
-        <form>
-          <div className="mb-3">
-            <label className="small fw-bold opacity-75 mb-1">Email Address</label>
-            <input
-              type="email"
-              className="form-control"
-              style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }}
-              placeholder="name@example.com"
-            />
-          </div>
+        {error && <div className="alert alert-danger py-2">{error}</div>}
 
-          <div className="mb-4">
-            <label className="small fw-bold opacity-75 mb-1">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }}
-              placeholder="••••••••"
-            />
-          </div>
+        <form onSubmit={handleLogin}>
+          <label className="small fw-bold opacity-75 mb-1">Email Address</label>
+          <input type="email" className="form-control mb-3" placeholder="name@example.com" value={email} onChange={(event) => setEmail(event.target.value)} />
 
-          <button className="btn w-100 fw-bold py-2 shadow-sm border-0" style={{ background: "var(--accent-color)", color: "#fff" }}>
+          <label className="small fw-bold opacity-75 mb-1">Password</label>
+          <input type="password" className="form-control mb-4" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} />
+
+          <button type="submit" className="btn w-100 fw-bold py-2 app-primary-button">
             Sign In
           </button>
         </form>
 
         <p className="text-center mt-4 small">
-          Don’t have an account?{" "}
-          <Link to="/register" style={{ color: "var(--accent-color)", fontWeight: "bold", textDecoration: 'none' }}>
-            Sign Up
-          </Link>
+          Do not have an account? <Link to="/register" className="app-link">Sign Up</Link>
         </p>
       </div>
     </div>
