@@ -3,7 +3,7 @@ import sequelize from "../config/db.js";
 
 const DoseLog = sequelize.define("DoseLog", {
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM("taken", "missed"),
     allowNull: false,
     defaultValue: "taken",
   },

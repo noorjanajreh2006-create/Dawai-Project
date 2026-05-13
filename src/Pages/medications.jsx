@@ -99,7 +99,7 @@ function Medications() {
               <div className="d-flex flex-column gap-3">
                 <input className="form-control" name="name" placeholder="Drug Name *" value={form.name} onChange={handleChange} />
                 <input className="form-control" name="dose" placeholder="Dose *" value={form.dose} onChange={handleChange} />
-                <input className="form-control" name="times" placeholder="Times (for example 8am, 2pm) *" value={form.times} onChange={handleChange} />
+                <input className="form-control" name="times" type="time" value={form.times} onChange={handleChange} />
                 <textarea className="form-control" name="notes" placeholder="Notes (optional)" rows="2" value={form.notes} onChange={handleChange} />
                 <button className="btn w-100 fw-bold py-2 app-primary-button" onClick={handleSubmit}>
                   {editId ? "Update Medication" : "Add Medication"}

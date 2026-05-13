@@ -77,6 +77,19 @@ export async function deleteMedication(req, res) {
   }
 }
 
+export async function getDoseLogs(req, res) {
+  try {
+    const date = req.query.date || new Date().toISOString().slice(0, 10);
+    const logs = await DoseLog.findAll({
+      where: { userId: req.user.id, date },
+    });
+
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 export async function logDose(req, res) {
   try {
     const medicationId = req.params.id || req.body.medId || req.body.medicationId;
@@ -90,6 +103,24 @@ export async function logDose(req, res) {
 
     const date = req.body.date || new Date().toISOString().slice(0, 10);
     const status = req.body.status || "taken";
+
+    if (!["taken", "missed"].includes(status)) {
+      return res.status(400).json({ message: "Status must be taken or missed" });
+    }
+
+    const existingLog = await DoseLog.findOne({
+      where: {
+        medicationId: medication.id,
+        userId: req.user.id,
+        date,
+      },
+      order: [["updatedAt", "DESC"]],
+    });
+
+    if (existingLog) {
+      await existingLog.update({ status });
+      return res.json({ success: true, log: existingLog });
+    }
 
     const log = await DoseLog.create({
       medicationId: medication.id,

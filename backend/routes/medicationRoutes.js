@@ -5,6 +5,7 @@ import {
   createMedication,
   updateMedication,
   deleteMedication,
+  getDoseLogs,
   logDose,
 } from "../controllers/medicationController.js";
 
@@ -13,6 +14,7 @@ const router = express.Router();
 router.use(authMiddleware);
 router.get("/", getMedications);
 router.post("/", createMedication);
+router.get("/dose-logs", getDoseLogs);
 router.put("/:id", updateMedication);
 router.delete("/:id", deleteMedication);
 router.post("/:id/log-dose", logDose);
