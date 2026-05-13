@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message);
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    alert("Login successful");
+    navigate("/dashboard");
+  };
+
   return (
     <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4" style={{ backgroundColor: 'var(--bg-color)' }}>
-
       <h1 className="fw-bold mb-4" style={{ color: 'var(--accent-color)' }}>💊 Dawai</h1>
 
       <div className="glass-card p-4 mx-3" style={{ maxWidth: "400px", width: "100%" }}>
@@ -13,15 +45,7 @@ function Login() {
           Sign in to track your medication progress
         </p>
 
-
-
-        <div className="d-flex align-items-center my-3">
-          <hr className="flex-grow-1" style={{ borderColor: 'var(--text-secondary)' }} />
-          <span className="px-3 small text-muted">OR EMAIL</span>
-          <hr className="flex-grow-1" style={{ borderColor: 'var(--text-secondary)' }} />
-        </div>
-
-        <form>
+        <form onSubmit={handleLogin}>
           <div className="mb-3">
             <label className="small fw-bold opacity-75 mb-1">Email Address</label>
             <input
@@ -29,6 +53,8 @@ function Login() {
               className="form-control"
               style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }}
               placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -39,10 +65,15 @@ function Login() {
               className="form-control"
               style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }}
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <button className="btn w-100 fw-bold py-2 shadow-sm border-0" style={{ background: "var(--accent-color)", color: "#fff" }}>
+          <button type="submit" className="btn w-100 fw-bold py-2 shadow-sm border-0" style={{ background: "var(--accent-color)", color: "#fff" }}>
+            Sign In
+          </button>
+        </form>
             Sign In
           </button>
         </form>
