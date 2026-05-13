@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-<<<<<<< HEAD
 import ProfileSettings from "./Pages/ProfileSettings";
 import Medications from "./Pages/medications";
 import Statistics from "./Pages/Statistics";
