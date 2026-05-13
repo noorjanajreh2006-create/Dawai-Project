@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { medicationData } from "../data/medData";
 import Footer from "../Components/Noor-jr/Footer";
 import { apiRequest } from "../api";
 
@@ -9,7 +8,6 @@ function Dashboard() {
   const [stats, setStats] = useState([]);
   const [error, setError] = useState("");
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const source = medications.length ? medications : medicationData;
   const todayKey = new Date().toISOString().slice(0, 10);
   const todayStats = stats.find((item) => item.date === todayKey);
   const takenToday = todayStats?.adherence || 0;
@@ -35,7 +33,7 @@ function Dashboard() {
 
           <div className="dashboard-summary">
             <span>Total Medications</span>
-            <strong>{source.length}</strong>
+            <strong>{medications.length}</strong>
           </div>
         </div>
       </header>
@@ -64,8 +62,15 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="row g-4">
-          {source.map((medication) => (
+        {medications.length === 0 ? (
+          <div className="glass-card p-5 text-center">
+            <h5 className="fw-bold mb-2">No medications yet</h5>
+            <p className="text-muted mb-4">Add your first medication to start tracking your schedule.</p>
+            <Link to="/medications" className="btn app-primary-button">Add Medication</Link>
+          </div>
+        ) : (
+          <div className="row g-4">
+            {medications.map((medication) => (
             <div className="col-12 col-md-6 col-lg-4" key={medication.id}>
               <div className="glass-card p-4 h-100">
                 <div className="d-flex justify-content-between align-items-start mb-3">
@@ -84,8 +89,9 @@ function Dashboard() {
                 {medication.notes && <p className="text-muted small mt-3 mb-0">{medication.notes}</p>}
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <Footer studentName="Abdallah Yaseen + Dawai Team" studentId="Frontend + Backend Merge" githubUrl="https://github.com/noorjanajreh2006-create/Dawai-Project" />
       </main>
