@@ -1,6 +1,6 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { User } from "../models/index.js";
 
 function publicUser(user) {
   return {
@@ -18,7 +18,7 @@ function signToken(user) {
   );
 }
 
-async function register(req, res) {
+export async function register(req, res) {
   try {
     const { fullName, email, password, confirmPassword } = req.body;
 
@@ -48,7 +48,7 @@ async function register(req, res) {
   }
 }
 
-async function login(req, res) {
+export async function login(req, res) {
   try {
     const { email, password } = req.body;
 
@@ -76,7 +76,7 @@ async function login(req, res) {
   }
 }
 
-async function getProfile(req, res) {
+export async function getProfile(req, res) {
   try {
     const user = await User.findByPk(req.user.id);
 
@@ -90,7 +90,7 @@ async function getProfile(req, res) {
   }
 }
 
-async function updateProfile(req, res) {
+export async function updateProfile(req, res) {
   try {
     const { fullName, email, password } = req.body;
     const user = await User.findByPk(req.user.id);
@@ -123,10 +123,3 @@ async function updateProfile(req, res) {
     res.status(500).json({ message: err.message });
   }
 }
-
-module.exports = {
-  register,
-  login,
-  getProfile,
-  updateProfile,
-};

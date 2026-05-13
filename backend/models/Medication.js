@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
 const Medication = sequelize.define("Medication", {
   name: {
@@ -25,4 +25,4 @@ const Medication = sequelize.define("Medication", {
   },
 });
 
-module.exports = Medication;
+export default Medication;

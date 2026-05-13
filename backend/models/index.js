@@ -1,6 +1,6 @@
-const User = require("./User");
-const Medication = require("./Medication");
-const DoseLog = require("./DoseLog");
+import User from "./User.js";
+import Medication from "./Medication.js";
+import DoseLog from "./DoseLog.js";
 
 User.hasMany(Medication, { foreignKey: "userId", onDelete: "CASCADE" });
 Medication.belongsTo(User, { foreignKey: "userId" });
@@ -11,7 +11,7 @@ DoseLog.belongsTo(User, { foreignKey: "userId" });
 Medication.hasMany(DoseLog, { foreignKey: "medicationId", onDelete: "CASCADE" });
 DoseLog.belongsTo(Medication, { foreignKey: "medicationId" });
 
-module.exports = {
+export {
   User,
   Medication,
   DoseLog,

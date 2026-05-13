@@ -1,14 +1,14 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
-const cors = require("cors");
-const mysql = require("mysql2/promise");
-const sequelize = require("./config/db");
-require("./models");
+import express from "express";
+import cors from "cors";
+import mysql from "mysql2/promise";
+import sequelize from "./config/db.js";
+import "./models/index.js";
 
-const authRoutes = require("./routes/authRoutes");
-const medicationRoutes = require("./routes/medicationRoutes");
-const statsRoutes = require("./routes/statsRoutes");
+import authRoutes from "./routes/authRoutes.js";
+import medicationRoutes from "./routes/medicationRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;

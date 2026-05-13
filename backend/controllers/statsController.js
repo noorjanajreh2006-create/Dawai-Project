@@ -1,6 +1,6 @@
-const { DoseLog } = require("../models");
+import { DoseLog } from "../models/index.js";
 
-async function getStats(req, res) {
+export async function getStats(req, res) {
   try {
     const logs = await DoseLog.findAll({
       where: { userId: req.user.id },
@@ -28,7 +28,3 @@ async function getStats(req, res) {
     res.status(500).json({ message: err.message });
   }
 }
-
-module.exports = {
-  getStats,
-};

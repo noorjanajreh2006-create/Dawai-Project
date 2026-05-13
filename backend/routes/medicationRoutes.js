@@ -1,12 +1,12 @@
-const express = require("express");
-const authMiddleware = require("../middleware/authMiddleware");
-const {
+import express from "express";
+import authMiddleware from "../middleware/authMiddleware.js";
+import {
   getMedications,
   createMedication,
   updateMedication,
   deleteMedication,
   logDose,
-} = require("../controllers/medicationController");
+} from "../controllers/medicationController.js";
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.put("/:id", updateMedication);
 router.delete("/:id", deleteMedication);
 router.post("/:id/log-dose", logDose);
 
-module.exports = router;
+export default router;

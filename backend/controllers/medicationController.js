@@ -1,6 +1,6 @@
-const { Medication, DoseLog } = require("../models");
+import { Medication, DoseLog } from "../models/index.js";
 
-async function getMedications(req, res) {
+export async function getMedications(req, res) {
   try {
     const medications = await Medication.findAll({
       where: { userId: req.user.id },
@@ -13,7 +13,7 @@ async function getMedications(req, res) {
   }
 }
 
-async function createMedication(req, res) {
+export async function createMedication(req, res) {
   try {
     const { name, dose, times, notes } = req.body;
 
@@ -35,7 +35,7 @@ async function createMedication(req, res) {
   }
 }
 
-async function updateMedication(req, res) {
+export async function updateMedication(req, res) {
   try {
     const medication = await Medication.findOne({
       where: { id: req.params.id, userId: req.user.id },
@@ -61,7 +61,7 @@ async function updateMedication(req, res) {
   }
 }
 
-async function deleteMedication(req, res) {
+export async function deleteMedication(req, res) {
   try {
     const deleted = await Medication.destroy({
       where: { id: req.params.id, userId: req.user.id },
@@ -77,7 +77,7 @@ async function deleteMedication(req, res) {
   }
 }
 
-async function logDose(req, res) {
+export async function logDose(req, res) {
   try {
     const medicationId = req.params.id || req.body.medId || req.body.medicationId;
     const medication = await Medication.findOne({
@@ -103,11 +103,3 @@ async function logDose(req, res) {
     res.status(500).json({ message: err.message });
   }
 }
-
-module.exports = {
-  getMedications,
-  createMedication,
-  updateMedication,
-  deleteMedication,
-  logDose,
-};
