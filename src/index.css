@@ -197,3 +197,43 @@ a {
   color: #ff8a8a;
   border-color: #ff8a8a;
 }
+[data-theme="dark"] .card {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .card-footer {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .card-body {
+  background-color: #111827 !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #374151 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .form-control {
+  background-color: #111827 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: #cbd5e1 !important;
+}
+[data-theme="dark"] .card,
+[data-theme="dark"] .chat-container,
+[data-theme="dark"] .chat-box,
+[data-theme="dark"] .chat-input-area {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.03);
+}
