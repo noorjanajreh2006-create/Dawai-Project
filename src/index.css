@@ -82,3 +82,36 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
 }
+
+.chat-card {
+  max-width: 900px;
+  height: 700px;
+}
+
+.chat-body {
+  background: #f8fafc;
+}
+
+.chat-message {
+  max-width: 75%;
+}
+
+[data-theme='dark'] .card {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme='dark'] .card-header,
+[data-theme='dark'] .card-footer {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme='dark'] .chat-body {
+  background-color: #111827 !important;
+}
+
+[data-theme='dark'] .bg-white {
+  background-color: #374151 !important;
+  color: #f9fafb !important;
+}
