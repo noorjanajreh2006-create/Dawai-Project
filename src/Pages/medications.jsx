@@ -1,132 +1,297 @@
-import React, { useState, useEffect } from "react";
-
-const API = "http://localhost:5000/api";
+import React, { useEffect, useState } from "react";
+import { apiRequest } from "../api";
 
 function Medications() {
+
+  // Store medications data
   const [medications, setMedications] = useState([]);
-  const [form, setForm] = useState({ name: "", dose: "", times: "", notes: "" });
+
+  // Store form inputs
+  const [form, setForm] = useState({
+    name: "",
+    dose: "",
+    times: "",
+    notes: ""
+  });
+
+  // Store selected medication id for editing
   const [editId, setEditId] = useState(null);
+
+  // Store error messages
   const [error, setError] = useState("");
+
+  // Track taken medication status
   const [takenStatus, setTakenStatus] = useState({});
 
+  // Fetch medications when component loads
   useEffect(() => {
-    fetch(`${API}/medications`)
-      .then(res => res.json())
-      .then(data => setMedications(data))
-      .catch(err => console.error(err));
+    apiRequest("/medications")
+      .then(setMedications)
+      .catch((err) => setError(err.message));
   }, []);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  // Handle form input changes
+  const handleChange = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    });
   };
 
+  // Add or update medication
   const handleSubmit = async () => {
+
+    // Frontend validation
     if (!form.name || !form.dose || !form.times) {
-      setError("Please fill all required fields");
+      setError("Please fill all required fields.");
       return;
     }
+
     setError("");
-    if (editId !== null) {
-      await fetch(`${API}/medications/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+
+    try {
+
+      // Update existing medication
+      if (editId !== null) {
+
+        const updatedMedication = await apiRequest(
+          `/medications/${editId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(form),
+          }   );
+
+        setMedications(
+          medications.map((medication) =>
+            medication.id === editId
+              ? updatedMedication
+              : medication
+          )
+        );
+
+        setEditId(null);
+
+      } else {
+
+        // Add new medication
+        const newMedication = await apiRequest("/medications", {
+          method: "POST",
+          body: JSON.stringify(form),
+        });
+
+        setMedications([newMedication, ...medications]);
+      }
+
+      // Reset form after submit
+      setForm({
+        name: "",
+        dose: "",
+        times: "",
+        notes: ""
       });
-      setMedications(medications.map(m => m.id === editId ? { ...form, id: editId } : m));
-      setEditId(null);
-    } else {
-      const res = await fetch(`${API}/medications`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, userId: "1" }),
-      });
-      const newMed = await res.json();
-      setMedications([...medications, newMed]);
+
+    } catch (err) {
+      setError(err.message);
     }
-    setForm({ name: "", dose: "", times: "", notes: "" });
   };
 
-  const handleEdit = (med) => {
-    setForm({ name: med.name, dose: med.dose, times: med.times, notes: med.notes });
-    setEditId(med.id);
+  // Fill form with medication data for editing
+  const handleEdit = (medication) => {
+    setForm({
+      name: medication.name,
+      dose: medication.dose,
+      times: medication.times,
+      notes: medication.notes || "",
+    });
+
+    setEditId(medication.id);
   };
 
+  // Delete medication
   const handleDelete = async (id) => {
-    await fetch(`${API}/medications/${id}`, { method: "DELETE" });
-    setMedications(medications.filter(m => m.id !== id));
+    try {
+
+      await apiRequest(`/medications/${id}`, {
+        method: "DELETE"
+      });
+
+      setMedications(
+        medications.filter(
+          (medication) => medication.id !== id
+        )
+      );
+
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
+  // Mark medication dose as taken
   const handleLogDose = async (medId) => {
     try {
-      await fetch(`${API}/log-dose`, {
+
+      await apiRequest(`/medications/${medId}/log-dose`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ medId, status: "taken" }),
+        body: JSON.stringify({ status: "taken" }),
       });
-      setTakenStatus({ ...takenStatus, [medId]: true });
+
+      setTakenStatus({
+        ...takenStatus,
+        [medId]: true
+      });
+
     } catch (err) {
-      console.error("Error logging dose:", err);
+      setError(err.message);
     }
   };
 
   return (
-    <div className="min-vh-100 py-5" style={{ backgroundColor: 'var(--bg-color)' }}>
+    <div className="min-vh-100 py-5 page-bg">
       <div className="container">
+
         <div className="text-center mb-5">
-          <h1 className="fw-bold mb-0" style={{ color: 'var(--accent-color)' }}>
-            💊 Dawai | دَوَائي
+          <h1 className="fw-bold mb-0 section-title">
+            Dawai Medications
           </h1>
-          <p className="text-muted mt-2">Manage your health journey efficiently</p>
+
+          <p className="text-muted mt-2">
+            Manage your health journey with your saved account data.
+          </p>
         </div>
 
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
+
             <div className="glass-card mb-5 p-4 border-0">
-              <h5 className="fw-bold mb-4">{editId ? "✏️ Edit Medication" : "➕ Add Medication"}</h5>
-              {error && <div className="alert alert-danger py-2">{error}</div>}
+
+              <h5 className="fw-bold mb-4">
+                {editId ? "Edit Medication" : "Add Medication"}
+              </h5>
+
+              {error && (
+                <div className="alert alert-danger py-2">
+                  {error}
+                </div>
+              )}
+
               <div className="d-flex flex-column gap-3">
-                <input className="form-control" style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }} name="name" placeholder="Drug Name *" value={form.name} onChange={handleChange} />
-                <input className="form-control" style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }} name="dose" placeholder="Dose *" value={form.dose} onChange={handleChange} />
-                <input className="form-control" style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }} name="times" placeholder="Times (e.g. 8am, 2pm) *" value={form.times} onChange={handleChange} />
-                <textarea className="form-control" style={{ backgroundColor: 'transparent', color: 'var(--text-primary)', borderColor: 'var(--text-secondary)' }} name="notes" placeholder="Notes (optional)" rows="2" value={form.notes} onChange={handleChange} />
-                <button className="btn btn-primary w-100 fw-bold py-2 rounded-3 shadow-sm border-0" style={{ backgroundColor: 'var(--accent-color)' }} onClick={handleSubmit}>
+
+                <input
+                  className="form-control"
+                  name="name"
+                  placeholder="Drug Name *"
+                  value={form.name}
+                  onChange={handleChange}
+                />
+
+                <input
+                  className="form-control"
+                  name="dose"
+                  placeholder="Dose *"
+                  value={form.dose}
+                  onChange={handleChange}
+                />
+
+                <input
+                  className="form-control"
+                  name="times"
+                  type="time"
+                  value={form.times}
+                  onChange={handleChange}
+                />
+
+                <textarea
+                  className="form-control"
+                  name="notes"
+                  placeholder="Notes (optional)"
+                  rows="2"
+                  value={form.notes}
+                  onChange={handleChange}
+                />
+
+                <button
+                  className="btn w-100 fw-bold py-2 app-primary-button"
+                  onClick={handleSubmit}
+                >
                   {editId ? "Update Medication" : "Add Medication"}
                 </button>
+
               </div>
             </div>
 
             <div className="d-flex flex-column gap-3">
-              <h5 className="fw-bold px-2">Today Checklist</h5>
+
+              <h5 className="fw-bold px-2">
+                Today Checklist
+              </h5>
+
               {medications.length === 0 && (
-                <div className="text-center py-5 text-muted opacity-50">No medications added yet.</div>
+                <div className="text-center py-5 text-muted opacity-75">
+                  No medications added yet.
+                </div>
               )}
-              {medications.map((med) => (
-                <div key={med.id} className="glass-card p-3 border-0">
-                  <div className="d-flex justify-content-between align-items-center">
+
+              {medications.map((medication) => (
+
+                <div
+                  key={medication.id}
+                  className="glass-card p-3 border-0"
+                >
+
+                  <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+
                     <div>
+
                       <div className="d-flex align-items-center gap-2">
+
                         <button
-                          className={`btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center ${takenStatus[med.id] ? 'btn-success' : 'btn-outline-secondary'}`}
-                          style={{ width: '24px', height: '24px' }}
-                          onClick={() => handleLogDose(med.id)}
+                          className={`btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center ${
+                            takenStatus[medication.id]
+                              ? "btn-success"
+                              : "btn-outline-secondary"
+                          }`}
+                          style={{ width: "24px", height: "24px" }}
+                          onClick={() => handleLogDose(medication.id)}
+                          aria-label="Mark dose as taken"
                         >
-                          {takenStatus[med.id] ? '✓' : ''}
+                          {takenStatus[medication.id] ? "✓" : ""}
                         </button>
-                        <h5 className="fw-bold mb-0" style={{ color: 'var(--accent-color)' }}>{med.name}</h5>
+
+                        <h5 className="fw-bold mb-0 section-title">
+                          {medication.name}
+                        </h5>
+
                       </div>
-                      <div className="d-flex gap-3 text-muted small mt-1 ms-4">
-                        <span>{med.dose}</span>
-                        <span>{med.times}</span>
+
+                      <div className="d-flex gap-3 text-muted small mt-1 ms-4 flex-wrap">
+                        <span>{medication.dose}</span>
+                        <span>{medication.times}</span>
                       </div>
+
                     </div>
+
                     <div className="d-flex gap-1">
-                      <button className="btn btn-link py-0 text-muted" onClick={() => handleEdit(med)}>Edit</button>
-                      <button className="btn btn-link py-0 text-danger" onClick={() => handleDelete(med.id)}>Delete</button>
+
+                      <button
+                        className="btn btn-link py-0 text-muted"
+                        onClick={() => handleEdit(medication)}
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        className="btn btn-link py-0 text-danger"
+                        onClick={() => handleDelete(medication.id)}
+                      >
+                        Delete
+                      </button>
+
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
           </div>
         </div>
       </div>

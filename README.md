@@ -1,70 +1,80 @@
-# Getting Started with Create React App
+# Dawai Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dawai is a React + Express medication tracker. The frontend runs on Create React App, and the backend uses Express, Sequelize, JWT authentication, and MySQL.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+```text
+backend/
+  config/db.js
+  controllers/
+  middleware/
+  models/
+  routes/
+  server.js
+src/
+  Pages/
+  Components/
+  data/
+  api.js
+```
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Install frontend dependencies:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+```
 
-### `npm test`
+Install backend dependencies:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm --prefix backend install
+```
 
-### `npm run build`
+Create `backend/.env` from `backend/.env.example` and set the MySQL credentials:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```env
+PORT=5000
+CLIENT_URL=http://localhost:3000
+DB_HOST=localhost
+DB_NAME=dawai
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+JWT_SECRET=change-this-secret
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The backend creates the `dawai` database automatically if the MySQL user has permission.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Run
 
-### `npm run eject`
+Run frontend only:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Run backend only:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm run backend
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Run frontend and backend together:
 
-## Learn More
+```bash
+npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Frontend: `http://localhost:3000`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Backend: `http://localhost:5000`
 
-### Code Splitting
+## Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Register and login with JWT.
+- View and update profile.
+- Add, edit, delete medications.
+- Log taken doses.
+- View weekly adherence statistics.
