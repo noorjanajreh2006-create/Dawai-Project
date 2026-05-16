@@ -1,0 +1,239 @@
+:root {
+  --bg-color: #f6f8fb;
+  --card-bg: #ffffff;
+  --text-primary: #223044;
+  --text-secondary: #6b778c;
+  --accent-color: #1f6feb;
+  --accent-hover: #185abc;
+  --border-color: rgba(31, 111, 235, 0.12);
+  --transition-speed: 0.3s;
+}
+
+[data-theme='dark'] {
+  --bg-color: #101827;
+  --card-bg: #182235;
+  --text-primary: #f2f6fb;
+  --text-secondary: #a9b5c7;
+  --accent-color: #58a6ff;
+  --accent-hover: #79b8ff;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+a {
+  color: inherit;
+}
+
+.page-bg {
+  background-color: var(--bg-color);
+}
+
+.app-navbar {
+  background-color: var(--card-bg);
+  transition: background-color var(--transition-speed);
+}
+
+.app-navbar .navbar-brand,
+.app-navbar .nav-link,
+.section-title,
+.app-link {
+  color: var(--accent-color);
+}
+
+.app-navbar .nav-link {
+  color: var(--text-primary);
+}
+
+.brand-logo {
+  width: 42px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.theme-toggle {
+  border: 1px solid var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+  background-color: var(--bg-color);
+}
+
+.auth-logo {
+  width: 150px;
+  max-width: 60vw;
+  margin-bottom: 24px;
+  object-fit: contain;
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 28px rgba(24, 48, 88, 0.08);
+  border-radius: 14px;
+  color: var(--text-primary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(24, 48, 88, 0.12);
+}
+
+.form-control {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.form-control:focus {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem rgba(31, 111, 235, 0.12);
+}
+
+.form-control::placeholder {
+  color: var(--text-secondary);
+}
+
+.app-primary-button,
+.app-primary-button:hover,
+.app-primary-button:focus {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+}
+
+.app-badge {
+  background-color: rgba(31, 111, 235, 0.12);
+  color: var(--accent-color);
+}
+
+.dashboard-header {
+  background: linear-gradient(180deg, rgba(31, 111, 235, 0.1), rgba(31, 111, 235, 0));
+}
+
+.dashboard-summary {
+  min-width: 180px;
+  padding: 18px;
+  border-radius: 14px;
+  background-color: var(--accent-color);
+  color: #ffffff;
+  text-align: center;
+}
+
+.dashboard-summary span,
+.stat-card span,
+.schedule-box span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.dashboard-summary span {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.dashboard-summary strong,
+.stat-card strong {
+  display: block;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.schedule-box {
+  border-radius: 10px;
+  padding: 14px;
+  background-color: rgba(31, 111, 235, 0.08);
+}
+
+.profile-logo {
+  width: 90px;
+  opacity: 0.9;
+}
+
+.team-footer {
+  margin-top: 32px;
+  padding: 18px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.team-footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+[data-theme='dark'] .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme='dark'] .btn-outline-danger {
+  color: #ff8a8a;
+  border-color: #ff8a8a;
+}
+[data-theme="dark"] .card {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .card-footer {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .card-body {
+  background-color: #111827 !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #374151 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .form-control {
+  background-color: #111827 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: #cbd5e1 !important;
+}
+[data-theme="dark"] .card,
+[data-theme="dark"] .chat-container,
+[data-theme="dark"] .chat-box,
+[data-theme="dark"] .chat-input-area {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.03);
+}
