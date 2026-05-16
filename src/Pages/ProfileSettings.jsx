@@ -49,7 +49,7 @@ function ProfileSettings() {
               <h5 className="mb-1">{fullName || "User Name"}</h5>
               <p className="text-muted mb-3 small">{email || "No email saved"}</p>
               <hr />
-              <p className="text-muted mb-0 small">Your account data is saved in the Dawai backend.</p>
+              <p className="text-muted mb-0 small">Manage your Dawai profile information and Stay secure 🔐</p>
             </div>
           </div>
 
@@ -79,7 +79,7 @@ function ProfileSettings() {
       </main>
 
       <div className="container pb-4">
-        <Footer studentName="Team Dawai" studentId="Frontend Merge" githubUrl="https://github.com/noorjanajreh2006-create/Dawai-Project" />
+        <Footer studentName="Noor janajreh" studentId="12400696" githubUrl="https://github.com/noorjanajreh2006-create" />
       </div>
     </div>
   );

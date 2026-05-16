@@ -7,11 +7,12 @@ import {
   updateProfile,
 } from "../controllers/authController.js";
 
-const router = express.Router();
+const router = express.Router(); // Creates a router to organize and reuse routes in different files
 
-router.post("/register", register);
+// Here we define the endpoints
+router.post("/register", register); // public routes you do not need a token Because you will get the token after sign in or sign up
 router.post("/login", login);
-router.get("/profile", authMiddleware, getProfile);
-router.put("/profile", authMiddleware, updateProfile);
+router.get("/profile", authMiddleware, getProfile); // Protected routes
+router.put("/profile", authMiddleware, updateProfile); // Must have the right token to access, so we added authmiddleware to ensure that
 
 export default router;

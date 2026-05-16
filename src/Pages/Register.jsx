@@ -4,7 +4,7 @@ import { apiRequest, saveSession } from "../api";
 
 function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState({ // Store some values
     fullName: "",
     email: "",
     password: "",
@@ -12,35 +12,37 @@ function Register() {
   });
   const [error, setError] = useState("");
 
-  const handleChange = (event) => {
+  const handleChange = (event) => { // Function called when any of the input fields change.
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
   const handleRegister = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // prevent the page from refreshing 
 
     if (!form.fullName || !form.email || !form.password || !form.confirmPassword) {
-      setError("Please fill in all fields.");
+      setError("Please fill in all fields."); // Return error if there is an empty field
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
+      setError("Passwords do not match."); // Match the password and confirm password fields
       return;
     }
 
     try {
-      const data = await apiRequest("/auth/register", {
+      const data = await apiRequest("/auth/register", { // Send an API request to the backend to register the user
         method: "POST",
-        body: JSON.stringify(form),
+        body: JSON.stringify(form), // As Json data
       });
 
-      saveSession(data);
-      navigate("/dashboard", { replace: true });
+      saveSession(data); // save (token, user info) in local storage
+      navigate("/dashboard", { replace: true }); // Hide the Login page from the browser history and navigate to the dashboard
     } catch (err) {
       setError(err.message);
     }
   };
+
+  // The code in samilar to Login page same logic, only the input fields are different and the API endpoint is different as well.
 
   return (
     <div className="auth-page">

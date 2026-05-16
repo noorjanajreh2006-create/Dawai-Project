@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // To store data inside the page
 import { Link, useNavigate } from "react-router-dom";
-import { apiRequest, saveSession } from "../api";
+import { apiRequest, saveSession } from "../api"; // To make API calls & save session data
 
 function Login() {
   const navigate = useNavigate();
@@ -9,25 +9,27 @@ function Login() {
   const [error, setError] = useState("");
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // prevent the page from refreshing 
 
-    if (!email || !password) {
+    if (!email || !password) { // Return error if there is an empty field
       setError("Please enter your email and password.");
       return;
     }
 
     try {
-      const data = await apiRequest("/auth/login", {
+      const data = await apiRequest("/auth/login", { // Send an API request to the backend to log in the user
         method: "POST",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }), // as JSON data
       });
 
-      saveSession(data);
-      navigate("/dashboard", { replace: true });
+      saveSession(data); // save (token, user info) in local storage
+      navigate("/dashboard", { replace: true }); // Hide the Login page from the browser history and navigate to the dashboard
     } catch (err) {
       setError(err.message);
     }
   };
+
+  // Most of the code here is done by using bootstrap classes for designing the page
 
   return (
     <div className="auth-page">
@@ -39,6 +41,7 @@ function Login() {
 
         {error && <div className="alert alert-danger py-2">{error}</div>}
 
+        {/* Call handleLogin when the form is submitted */}
         <form onSubmit={handleLogin}>
           <label className="small fw-bold opacity-75 mb-1">Email Address</label>
           <input type="email" className="form-control mb-3" placeholder="name@example.com" value={email} onChange={(event) => setEmail(event.target.value)} />
